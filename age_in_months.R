@@ -6,20 +6,24 @@ age_in_months <- function(age) {
                            "year" = 12.0, "years" = 12.0,
                            "day" = 0.333, "days" = 0.333)
   
-  # Apply as.character to allow for both string and stringAsFactor input
+  # Split each string (or as.character-ized factor) into a length-2 list of
+  # (numeric age, unit of measure)
   split_age_string <- strsplit(x = as.character(age),
                                split = " ")
   
   # Extract numeric age from the first value of each split age string
-  numeric_age <- as.numeric(sapply(X = split_age_string,
-                                   FUN = function(age_str) { age_str[1] }))
+  numeric_age <- sapply(X = split_age_string,
+                        FUN = function(age_str_list) {
+                          as.numeric(as.character(age_str_list)[1])
+                        })
   
   # Extract its unit of measure for each from the second, then pull the
   # appropriate conversion coefficients
-  unit_string <- sapply(X = split_age_string,
-                        FUN = function(age_str) { age_str[2] })
-  conversion_multiple <- unit_conversions[[unit_string]]
+  conversion_multiple <- sapply(X = split_age_string,
+                                FUN = function(age_str_list) {
+                                  unit_of_measure <- as.character(age_str_list)[2]
+                                  as.numeric(unit_conversions[[unit_of_measure]])
+                                })
   
-  
-  numeric_age * conversion_multiple
+  numeric_age * as.numeric(conversion_multiple)
 }
