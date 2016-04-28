@@ -5,6 +5,10 @@ load_data_source <- function(path="train.csv",
                              method=read.csv) {
   raw <- method(path)
   
+  as_keywords <- function(strings) {
+    strsplit(x, split = "\s+")
+  }
+  
   transmute(raw,
             id = AnimalID,
             # Factor variable: cat or dog.
@@ -18,7 +22,7 @@ load_data_source <- function(path="train.csv",
             breed = Breed,
                 
             # Factor variable, many levels: Coat color
-            color = Color,
+            color = as_keywords(Color),
             
             # Factor: Levels depend on outcome_type.
             # outcome_subtype = OutcomeSubtype,
